@@ -9,8 +9,8 @@ export const GlobalStyles=createGlobalStyle`
 
 
 body{
-  background:black;
-  color:white;
+  background:${({theme})=>theme.background};
+  color:${({theme})=>theme.textColor};
   margin:0;
   padding:0;
   transition:all 0.25s linear;
@@ -42,6 +42,7 @@ body{
   font-size:32px;
   display:flex;
   flex-wrap:wrap;
+  color:${({theme})=>theme.typeBoxText};
 
 }
 
@@ -61,11 +62,11 @@ body{
   animation: blinking 2s infinite;
   animation-timimg-function:ease; 
   @keyframes blinking {
-    0% {border-left-color:white;}
-    25% {border-left-color:black;}
-    50% {border-left-color:white;}
-    75% {border-left-color:black;}
-    100% {border-left-color:white;}
+    0% {border-left-color:${({theme})=>theme.textColor};}
+    25% {border-left-color:${({theme})=>theme.background};}
+    50% {border-left-color:${({theme})=>theme.textColor};}
+    75% {border-left-color:${({theme})=>theme.background};}
+    100% {border-left-color:${({theme})=>theme.textColor};}
    
   }
 }
@@ -75,21 +76,51 @@ body{
   animation: blinkingRight 2s infinite;
   animation-timimg-function:ease; 
   @keyframes blinkingRight {
-    0% {border-right-color:white;}
-    25% {border-right-color:black;}
-    50% {border-right-color:white;}
-    75% {border-right-color:black;}
-    100% {border-right-color:white;}
+    0% {border-right-color:${({theme})=>theme.textColor};}
+    25% {border-right-color:${({theme})=>theme.background};}
+    50% {border-right-color:${({theme})=>theme.textColor};}
+    75% {border-right-color:${({theme})=>theme.background};}
+    100% {border-right-color:${({theme})=>theme.textColor};}
    
   }
 }
 
 .correct{
-  color:green;
+  color:${({theme})=>theme.textColor};
 }
 
 .incorrect{
   color:red;
+}
+
+
+.upper-menu{
+display:flex;
+width:1000px;
+margin-left:auto;
+margin-right:auto;
+font-size:1.35rem;
+justify-content:space-between;
+padding:0.5rem;
+}
+
+.modes{
+  display:flex;
+  gap:0.4rem;
+}
+
+.time-mode:hover{
+  color:green;
+  cursor:pointer;
+}
+
+
+.footer{
+  width:1000px;
+  display:flex;
+  justify-content:space-between;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 `
