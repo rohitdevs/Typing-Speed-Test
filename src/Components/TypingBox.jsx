@@ -3,22 +3,21 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { generate, count } from "random-words";
 import UpperMenu from "./UpperMenu";
 import { useTestMode } from "../Context/testModeContext";
+import Stats from "./Stats";
 
 const TypingBox = () => {
   const inputRef = useRef(null);
 
-  const {testTime}=useTestMode();
+  const { testTime } = useTestMode();
   const [countDown, setCountDown] = useState(testTime);
-  const[intervalId,setintervalId]=useState(null);
+  const [intervalId, setintervalId] = useState(null);
   const [testStart, setTestStart] = useState(false);
   const [testEnd, setTestEnd] = useState(false);
-  const[correctChars,setCorrectChars]=useState(0);
-  const[incorrectChars,setinCorrectChars]=useState(0);
-  const[missedChars,setmissedChars]=useState(0);
-  const[extraChars,setextraChars]=useState(0);
-  const[correctWords,setCorrectWords]=useState(0);
-
-
+  const [correctChars, setCorrectChars] = useState(0);
+  const [incorrectChars, setinCorrectChars] = useState(0);
+  const [missedChars, setmissedChars] = useState(0);
+  const [extraChars, setextraChars] = useState(0);
+  const [correctWords, setCorrectWords] = useState(0);
 
   const [wordsArray, setWordsArray] = useState(() => {
     return generate(50);
@@ -26,6 +25,8 @@ const TypingBox = () => {
 
   const [currWordIndex, setcurWordIndex] = useState(0);
   const [currCharIndex, setcurCharIndex] = useState(0);
+  const [graphData, setgraphData] = useState([]);
+
 
   const wordsSpanRef = useMemo(() => {
     return Array(wordsArray.length)
@@ -38,6 +39,15 @@ const TypingBox = () => {
     setintervalId(intervalId);
     function timer() {
       setCountDown((latest) => {
+        setCorrectChars((correctChars)=>{
+          setgraphData((graphData)=>{
+            return [...graphData,[
+              testTime-latest+1,
+              (correctChars/5)/((testTime-latest+1)/60)
+            ]];
+          })
+          return correctChars;
+        })
         if (latest === 1) {
           setTestEnd(true);
           clearInterval(intervalId);
@@ -49,8 +59,7 @@ const TypingBox = () => {
     }
   };
 
-
-   const resetTest=()=>{
+  const resetTest = () => {
     clearInterval(intervalId);
     setCountDown(testTime);
     setcurWordIndex(0);
@@ -60,16 +69,16 @@ const TypingBox = () => {
     setWordsArray(generate(50));
     resetwordsSpanRef();
     focusInput();
-   }
+  };
 
-   const resetwordsSpanRef=()=>{
-    wordsSpanRef.map(i=>{
-      Array.from(i.current.childNodes).map(j=>{
-           j.className='';
-      })
+  const resetwordsSpanRef = () => {
+    wordsSpanRef.map((i) => {
+      Array.from(i.current.childNodes).map((j) => {
+        j.className = "";
+      });
     });
-    wordsSpanRef[0].current.childNodes[0].className='current';
-   }
+    wordsSpanRef[0].current.childNodes[0].className = "current";
+  };
 
   const handleUserInput = (e) => {
     if (!testStart) {
@@ -81,14 +90,15 @@ const TypingBox = () => {
 
     if (e.keyCode === 32) {
       //logic for space
-       let correctcharsinword=wordsSpanRef[currWordIndex].current.querySelectorAll('.correct');
-       if(correctcharsinword.length===allCurrChars.length)
-       setCorrectWords(correctWords+1);
+      let correctcharsinword =
+        wordsSpanRef[currWordIndex].current.querySelectorAll(".correct");
+      if (correctcharsinword.length === allCurrChars.length)
+        setCorrectWords(correctWords + 1);
       if (allCurrChars.length <= currCharIndex) {
         //remove cursor from last place in a word
         allCurrChars[currCharIndex - 1].classList.remove("current-right");
       } else {
-        setmissedChars(missedChars+(allCurrChars.length-currCharIndex))
+        setmissedChars(missedChars + (allCurrChars.length - currCharIndex));
         allCurrChars[currCharIndex].classList.remove("current");
       }
 
@@ -104,7 +114,7 @@ const TypingBox = () => {
         if (allCurrChars.length === currCharIndex) {
           if (allCurrChars[currCharIndex - 1].className.includes("extra")) {
             allCurrChars[currCharIndex - 1].remove();
-            allCurrChars[currCharIndex - 2].className+= " current-right";
+            allCurrChars[currCharIndex - 2].className += " current-right";
           } else {
             allCurrChars[currCharIndex - 1].className = "current";
           }
@@ -127,16 +137,16 @@ const TypingBox = () => {
       allCurrChars[currCharIndex - 1].classList.remove("current-right");
       wordsSpanRef[currWordIndex].current.append(newSpan);
       setcurCharIndex(currCharIndex + 1);
-      setextraChars(extraChars+1);
+      setextraChars(extraChars + 1);
       return;
     }
 
     if (e.key === allCurrChars[currCharIndex].innerText) {
       allCurrChars[currCharIndex].className = "correct";
-      setCorrectChars(correctChars+1);
+      setCorrectChars(correctChars + 1);
     } else {
       allCurrChars[currCharIndex].className = "incorrect";
-      setinCorrectChars(incorrectChars+1);
+      setinCorrectChars(incorrectChars + 1);
     }
 
     if (currCharIndex + 1 === allCurrChars.length) {
@@ -150,17 +160,17 @@ const TypingBox = () => {
     inputRef.current.focus();
   };
 
-  const calculateWPM=()=>{
-    return Math.round((correctChars/5)/(testTime/60));
-  }
+  const calculateWPM = () => {
+    return Math.round(correctChars / 5 / (testTime / 60));
+  };
 
-  const calculateAcc=()=>{
-    return Math.round((correctWords/currWordIndex)*100)
-  }
+  const calculateAcc = () => {
+    return Math.round((correctWords / currWordIndex) * 100);
+  };
 
-useEffect(()=>{
-resetTest();
-},[testTime])
+  useEffect(() => {
+    resetTest();
+  }, [testTime]);
 
   useEffect(() => {
     focusInput();
@@ -171,7 +181,16 @@ resetTest();
     <div>
       <UpperMenu countDown={countDown} />
       {testEnd ? (
-        <h1>Test Over</h1>
+        <Stats
+          wpm={calculateWPM()}
+          accuracy={calculateAcc()}
+          correctChars={correctChars}
+          incorrectChars={incorrectChars}
+          missedChars={missedChars}
+          extraChars={extraChars}
+          graphData={graphData}
+        />
+       
       ) : (
         <div className="type-box" onClick={focusInput}>
           <div className="words">
