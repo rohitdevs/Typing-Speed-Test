@@ -150,4 +150,17 @@ padding:0.5rem;
   font-size:30px
 }
 
+
+.header{
+  width:1000px;
+  display:flex;
+  justify-content:space-between;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.abcd{
+  cursor:pointer;
+}
+
 `
