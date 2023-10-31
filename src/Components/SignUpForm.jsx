@@ -13,7 +13,7 @@ const[password,setpassword]=useState('');
 const[cpassword,setcpassword]=useState('');
 const {theme}=useTheme();
 
-const handlesubmit=()=>{
+const handlesubmit=({handleClose})=>{
   if(!email||!password||!cpassword)
   {
     toast.warning('Fill all the details', {
@@ -78,6 +78,7 @@ const handlesubmit=()=>{
       progress: undefined,
       theme: "light",
       });
+      handleClose();
   }).catch((err)=>{
     console.log(err);
     toast.error(errorMapping[err.code]||'Some error occured', {

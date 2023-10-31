@@ -4,7 +4,7 @@ const TestModeContext=createContext();
 
 export const TestModeContextProvider =({children})=>{
 
-const[testTime,setTestTime]=useState(6);
+const[testTime,setTestTime]=useState(15);
 
 const values={
   testTime,

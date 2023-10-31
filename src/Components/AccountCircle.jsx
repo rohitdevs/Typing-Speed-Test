@@ -9,15 +9,26 @@ import {signInWithPopup,GoogleAuthProvider} from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { toast } from 'react-toastify';
 import errorMapping from '../Utils/errorMapping';
+import LogoutIcon from '@mui/icons-material/Logout';
+import {useAuthState} from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
 const AccountCircle = () => {
 
 const[open,setopen]=useState(false);
 const[value,setvalue]=useState(0);
 const {theme}=useTheme();
 
+const navigate=useNavigate();
+const [user]=useAuthState(auth);
+
+
 
 const handleModalOpen=()=>{
-    setopen(true);
+  if(user){
+    navigate('/user');
+  }
+  else
+setopen(true);
 }
 const handleClose=()=>{
     setopen(false);
@@ -25,6 +36,32 @@ const handleClose=()=>{
 
 const handleValueChange=(e,v)=>{
     setvalue(v);
+}
+
+const logout=()=>{
+  auth.signOut().then((res)=>{
+    toast.success('Logged out', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }).catch((err)=>{
+    toast.error('not able to log out', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  })
 }
 
 const googleProvider=new GoogleAuthProvider();
@@ -40,6 +77,7 @@ signInWithPopup(auth,googleProvider).then((res)=>{
     progress: undefined,
     theme: "light",
     });
+    handleClose();
 }).catch((err)=>{
   toast.error(errorMapping[err.code]||'Some error occured', {
     position: "top-right",
@@ -56,8 +94,8 @@ signInWithPopup(auth,googleProvider).then((res)=>{
 
   return (
     <div>
-      <div className="abcd"> <AccountCircleIcon onClick={handleModalOpen} /></div>
-     
+      <div className="abcd"> <AccountCircleIcon onClick={handleModalOpen} />{user&&<LogoutIcon onClick={logout}/>}</div>
+      
 
       <Modal open={open} onClose={handleClose}
       
@@ -83,8 +121,8 @@ signInWithPopup(auth,googleProvider).then((res)=>{
 
           
         </AppBar>
-        {value===0&&<LoginForm/>}
-        {value===1&&<SignUpForm/>}
+        {value===0&&<LoginForm handleClose={handleClose}/> }
+        {value===1&&<SignUpForm  handleClose={handleClose}/>}
       
 
       <Box>

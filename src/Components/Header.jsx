@@ -1,11 +1,14 @@
 import React from 'react'
 import AccountCircle from './AccountCircle'
-
+import KeyboardIcon from '@mui/icons-material/Keyboard';
 const Header = () => {
   return (
    <div className="header">
     <div className="logo">
-        LOGO
+      <div className="logo1">TypeCat</div>
+      <div className="logo2"><KeyboardIcon/></div>
+        
+      
     </div>
     <div className="user-icon">
        <AccountCircle/>

@@ -14,7 +14,7 @@ const Footer = () => {
     <div>
       <div className="footer">
         <div className="links">
-          Links
+          {/* Links */}
         </div>
         <div className="themeButton">
           <Select
